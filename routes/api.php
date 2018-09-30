@@ -18,3 +18,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::post('/tree', 'TreeController@create');
+Route::post('/factory', 'FactoryController@create');
+Route::put('/factory/{id}', 'FactoryController@update');
+Route::delete('/factory/{id}', 'FactoryController@delete');
+Route::get('/factory/{id}', 'FactoryController@get');

@@ -24,18 +24,10 @@
 
 <!-- Begin page content -->
 <main role="main" class="container">
-    <div class="row">
+    <div class="row justify-content-center">
         <ul class="nav nav-tabs" id="navList">
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
-                   aria-haspopup="true" aria-expanded="false">Dropdown</a>
-                <div class="dropdown-menu">
-                    <a class="dropdown-item" data-toggle="modal" data-target="#addTreeModal">Add tree root</a>
-                    <a class="dropdown-item" href="#">Another action</a>
-                    <a class="dropdown-item" href="#">Something else here</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Separated link</a>
-                </div>
+            <li class="nav-item">
+                <a class="nav-link" data-toggle="modal" data-target="#addTreeModal">add tree</a>
             </li>
             @foreach($trees as $tree)
                 <li class="nav-item">
@@ -89,6 +81,71 @@
             data.tree.id + '" target="' + data.tree.id + '">' + data.tree.name + '</button> </li>';
         $('#navList').append(listItem);
     });
+
+    function createFactoryItems(data) {
+        var factoryNameDiv = $('<div>' + data.factory.name + '</div>');
+        factoryNameDiv.addClass('float-left');
+        factoryNameDiv.attr('target', data.factory.id);
+        var factoryButtonsDiv = $('<div></div>');
+        factoryButtonsDiv.addClass('float-right ml-5');
+        var updateFactoryButton = $('<button></button>');
+        updateFactoryButton.addClass('btn update-factory-button');
+        updateFactoryButton.attr('target', data.factory.id);
+        updateFactoryButton.attr('type', 'button');
+        updateFactoryButton.attr('data-toggle', 'modal');
+        updateFactoryButton.attr('data-target', '#updateFactoryModal');
+        updateFactoryButton.text('update');
+        var deleteFactoryButton = $('<button></button>');
+        deleteFactoryButton.addClass('btn delete-factory-button btn-warning ml-1');
+        deleteFactoryButton.attr('target', data.factory.id);
+        deleteFactoryButton.attr('type', 'button');
+        deleteFactoryButton.text('delete');
+        factoryButtonsDiv.append(updateFactoryButton);
+        factoryButtonsDiv.append(deleteFactoryButton);
+        var factoryListItem = $('<li></li>');
+        factoryListItem.addClass('list-group-item active');
+        factoryListItem.attr('target', data.factory.id);
+        factoryListItem.append(factoryNameDiv);
+        factoryListItem.append(factoryButtonsDiv);
+        return factoryListItem;
+    }
+
+    function createFactoryNodeItem(node, factoryId) {
+        var nodeItem = $('<li>' + node.value + '</li>');
+        nodeItem.addClass('list-group-item ml-5 node');
+        nodeItem.attr('target', factoryId);
+        return nodeItem;
+    }
+
+    channel.bind('factory.created', function(data) {
+        var factoryListItem = createFactoryItems(data);
+        $('#factoryListGroup').append(factoryListItem);
+        for(var i = 0; i < data.factory.nodes.length; i++) {
+            var node = data.factory.nodes[i];
+            $('#factoryListGroup').append(createFactoryNodeItem(node, data.factory.id));
+        }
+    });
+
+    channel.bind('factory.updated', function(data) {
+        var factoryItemList = $('#factoryListGroup');
+        $('li[target=' + data.factory.id + ']').each(function() {
+            $(this).remove();
+        });
+        var factoryItem = createFactoryItems(data);
+        factoryItemList.append(factoryItem);
+        for(var i = 0; i < data.factory.nodes.length; i++) {
+            var node = data.factory.nodes[i];
+            var nodeItem = createFactoryNodeItem(node, data.factory.id);
+            factoryItemList.append(nodeItem);
+        }
+    });
+
+    channel.bind('factory.deleted', function(data) {
+        $('li[target=' + data.factoryId + ']').each(function() {
+            $(this).remove();
+        });
+    });
+
 </script>
 </body>
 </html>

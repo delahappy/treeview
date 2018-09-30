@@ -12,7 +12,7 @@ class Factory extends Model
 
     public function nodes()
     {
-        return $this->hasMany('App\Node', 'node_id', 'id');
+        return $this->hasMany('App\Node');
     }
 
     public function tree()

@@ -16,6 +16,15 @@ class EventServiceProvider extends ServiceProvider
         'App\Events\CreateTree' => [
             'App\Listeners\TreeCreatedNotification',
         ],
+        'App\Events\CreateFactory' => [
+            'App\Listeners\FactoryCreatedNotification',
+        ],
+        'App\Events\DeleteFactory' => [
+            'App\Listeners\FactoryDeletedNotification',
+        ],
+        'App\Events\UpdateFactory' => [
+            'App\Listeners\FactoryUpdatedNotification',
+        ],
     ];
 
     /**
