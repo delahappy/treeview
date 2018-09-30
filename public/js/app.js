@@ -1,4 +1,16 @@
 $(document).ready(function () {
+    $('#addTreeModal').on('shown.bs.modal', function () {
+        $('#newTreeName').val('');
+        $('#newTreeName').trigger('focus');
+    });
+
+    $(window).keydown(function(event){
+        if(event.keyCode == 13) {
+            event.preventDefault();
+            return false;
+        }
+    });
+
     $('#addTreeButton').click(function () {
         var validationMessages = [];
         if($('#newTreeName').val().trim().length === 0) {
