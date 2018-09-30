@@ -1,0 +1,32 @@
+1.  Install docker, PHP Storm, and Composer.
+2.  Checkout the project.
+3.  cd to your project directory and run 'php composer.phar update'
+4.  Copy the database extract to project_directory/docker/postgres/structure.sql
+5.  Update the .env file with your ip address.
+6.  Update your /etc/hosts file (different for windows) so that cci-devvm-tj-app.uncc.edu points to 127.0.0.1
+7.  Open a command prompt or terminal and cd to the project_directory/docker/postgres
+8.  Run these commands to get your database image running:
+        docker build --rm -t local/postgres .
+        docker run -d --rm -p 5432:5432 local/postgres
+9.  cd to the project_directory
+10.  Run these commands:
+        docker build --rm -t local/tsowebapp .
+
+        * if you get weird 404 errors run with no cache
+
+        ex: docker build --rm --no-cache -t local/tsowebapp .
+
+        Update the following command text between -v and :/var to include the hardcoded path of your project_directory and then run it.
+
+        docker run -d --rm --privileged -p 80:80 -p 443:443 -v /Users/tjbryant/PhpstormProjects/event-registrar-web/:/var/www/html/app local/tsowebapp
+
+
+
+Hints:
+1.  Get a terminal to your image like this: docker run -it local/tsowebapp bash
+2.  If you want to see the docker images you have running run 'docker ps'
+3.  If you want to restart a docker image, first run 'docker kill <container id>'
+4.  If you want to run a command in the docker image it's self you can run it like this:
+    docker exec <container_id> COMMAND
+    ex: docker exec <container_id> tail -f /var/log/apache2/error.log
+5.  Get a terminal in container: docker exec -it appserver /bin/bash
